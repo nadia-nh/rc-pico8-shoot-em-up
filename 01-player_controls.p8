@@ -53,21 +53,27 @@ function clamp_coordinates()
     screen_max_y - player_height - 1)
 end
 
--- Shoot a (wide) line up
 -- TODO: Use a sprite, and add movement to that
+-- Handles firing logic for the laser weapon.
 function shoot()
-  if btn(button_x) then
-    shooting = true
-    local line_x = player.x + player_width / 2
-    lasers = {
-      {x = line_x - 1, y = player.y},
-      {x = line_x, y = player.y}
-    }
+  shooting = btn(button_x)
+  
+  if shooting then
+    draw_laser_beam()
+    return
+  end
+end
 
-    for laser in all(lasers) do
-      line(laser.x, laser.y, laser.x, screen_min_y, color_green)
-    end
-  else
-    shooting = false
+-- Draw a vertical green beam from player upward
+function draw_laser_beam()
+  local line_x = player.x + player_width / 2
+
+  lasers = {
+    {x = line_x - 1, y = player.y},
+    {x = line_x, y = player.y}
+  }
+  
+  for laser in all(lasers) do
+    line(laser.x, laser.y, laser.x, screen_min_y, color_green)
   end
 end
