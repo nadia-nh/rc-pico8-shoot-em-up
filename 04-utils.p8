@@ -45,8 +45,10 @@ function init_constants()
   enemy_count = 3
   shooting_distance_min = 0.5
 
-  laser_duration = 50
+  laser_duration_easy = 70 -- frames at level 1
+  laser_duration_hard = 30 -- frames at max difficulty
   laser_cooldown_duration = 30 -- frames needed to recharge
+
   -- value used to compare floats
   epsilon = 0.00001
 end
@@ -66,3 +68,13 @@ function clamp(val, min, max)
 
   return val
 end
+
+-- Returns how far along the difficulty scale we are as a value between 0 and 1
+-- (0 = easiest, 1 = hardest)
+function get_difficulty_progress()
+  local difficulty = get_difficulty()
+  local max_step = max(1, difficulty_max - 1)
+  local progress = clamp(difficulty - 1, 0, max_step)
+  return (progress / max_step) ^ 1.1
+end
+

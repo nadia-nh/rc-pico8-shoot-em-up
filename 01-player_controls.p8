@@ -61,7 +61,7 @@ function shoot()
   local wants_to_fire = btn(button_x)
 
   -- Laser duration has reached the maximum
-  if laser_active_frames > laser_duration then
+  if laser_active_frames > get_laser_max_active_frames() then
     begin_laser_cooldown()
     return
   end
@@ -109,4 +109,11 @@ function draw_laser_beam()
   for laser in all(lasers) do
     line(laser.x, laser.y, laser.x, screen_min_y, color_green)
   end
+end
+
+-- Compute max frames the laser may stay on (easy -> hard)
+function get_laser_max_active_frames()
+  local progress = get_difficulty_progress()
+  local value = laser_duration_easy - (laser_duration_easy - laser_duration_hard) * progress
+  return max(laser_duration_hard, flr(value)) -- clamp to at least 'hard'
 end
