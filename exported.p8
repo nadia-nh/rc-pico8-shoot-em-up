@@ -1,5 +1,5 @@
-pico-8 cartridge // http://www.pico-8.com
-version 43
+--pico-8 cartridge // http://www.pico-8.com
+--version 43
 __lua__
 function _init()
   init_constants()
