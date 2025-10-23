@@ -45,6 +45,8 @@ function init_constants()
   enemy_count = 3
   shooting_distance_min = 0.5
 
+  laser_duration = 50
+  laser_cooldown_duration = 30 -- frames needed to recharge
   -- value used to compare floats
   epsilon = 0.00001
 end

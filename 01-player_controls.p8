@@ -9,6 +9,8 @@ function init_player()
     {x = screen_min_x, y = screen_min_y},
     {x = screen_min_x, y = screen_min_y}}
   shooting = false
+  laser_active_frames = 0
+  laser_cooldown_remaining = 0
 end
 
 -- Check for left, right, up, and down inputs and update the player position
@@ -56,12 +58,43 @@ end
 -- TODO: Use a sprite, and add movement to that
 -- Handles firing logic for the laser weapon.
 function shoot()
-  shooting = btn(button_x)
-  
-  if shooting then
-    draw_laser_beam()
+  local wants_to_fire = btn(button_x)
+
+  -- Laser duration has reached the maximum
+  if laser_active_frames > laser_duration then
+    begin_laser_cooldown()
     return
   end
+
+  -- Cooldown hasn't finished yet
+  if laser_cooldown_remaining > 0 then
+    laser_cooldown_remaining = max(0, laser_cooldown_remaining - 1)
+    return
+  end
+
+  if not shooting and wants_to_fire then
+    start_shooting()
+  end
+
+  -- Check if we're already shooting
+  if shooting then
+    laser_active_frames += 1
+    draw_laser_beam()
+  end
+
+  shooting = wants_to_fire
+end
+
+function start_shooting()
+  shooting = true
+  laser_active_frames = 0
+  laser_cooldown_remaining = 0
+end
+
+function begin_laser_cooldown()
+  shooting = false
+  laser_active_frames = 0
+  laser_cooldown_remaining = laser_cooldown_duration
 end
 
 -- Draw a vertical green beam from player upward
