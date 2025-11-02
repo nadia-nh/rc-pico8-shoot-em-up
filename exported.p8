@@ -20,7 +20,7 @@ function _draw()
   draw_score()
 end
 -->8
---Player controls--
+--player controls--
 
 -- initialize player position and size, also the colors we'll use
 function init_player()
@@ -31,6 +31,8 @@ function init_player()
     {x = screen_min_x, y = screen_min_y},
     {x = screen_min_x, y = screen_min_y}}
   shooting = false
+  laser_active_frames = 0
+  laser_cooldown_remaining = 0
 end
 
 -- check for left, right, up, and down inputs and update the player position
@@ -75,26 +77,71 @@ function clamp_coordinates()
     screen_max_y - player_height - 1)
 end
 
--- shoot a (wide) line up
 -- todo: use a sprite, and add movement to that
+-- handles firing logic for the laser weapon.
 function shoot()
-  if btn(button_x) then
-    shooting = true
-    local line_x = player.x + player_width / 2
-    lasers = {
-      {x = line_x - 1, y = player.y},
-      {x = line_x, y = player.y}
-    }
+  local wants_to_fire = btn(button_x)
 
-    for laser in all(lasers) do
-      line(laser.x, laser.y, laser.x, screen_min_y, color_green)
-    end
-  else
-    shooting = false
+  -- laser duration has reached the maximum
+  if laser_active_frames > get_laser_max_active_frames() then
+    begin_laser_cooldown()
+    return
+  end
+
+  -- cooldown hasn't finished yet
+  if laser_cooldown_remaining > 0 then
+    laser_cooldown_remaining = max(0, laser_cooldown_remaining - 1)
+    return
+  end
+
+  if not shooting and wants_to_fire then
+    start_shooting()
+  end
+
+  -- check if we're already shooting
+  if shooting then
+    laser_active_frames += 1
+    draw_laser_beam()
+  end
+
+  shooting = wants_to_fire
+end
+
+function start_shooting()
+  shooting = true
+  laser_active_frames = 0
+  laser_cooldown_remaining = 0
+end
+
+function begin_laser_cooldown()
+  shooting = false
+  laser_active_frames = 0
+  laser_cooldown_remaining = laser_cooldown_duration
+end
+
+-- draw a vertical green beam from player upward
+function draw_laser_beam()
+  local line_x = player.x + player_width / 2
+
+  lasers = {
+    {x = line_x - 1, y = player.y},
+    {x = line_x, y = player.y}
+  }
+  
+  for laser in all(lasers) do
+    line(laser.x, laser.y, laser.x, screen_min_y, color_green)
   end
 end
+
+-- compute max frames the laser may stay on (easy -> hard)
+function get_laser_max_active_frames()
+  local progress = get_difficulty_progress()
+  local value = laser_duration_easy - (laser_duration_easy - laser_duration_hard) * progress
+  return max(laser_duration_hard, flr(value)) -- clamp to at least 'hard'
+end
+
 -->8
---Enemy controls--
+--enemy controls--
 
 -- fill upper third of the screen with enemies
 function init_enemies()
@@ -223,7 +270,7 @@ function destroy_enemy(enemy)
   increase_score()
 end
 -->8
--- Scoring --
+-- scoring --
 function init_score()
   score = 0
   health = 5
@@ -266,7 +313,7 @@ function draw_score()
   print("level: "..difficulty, 80, 14, white)
 end
 -->8
--- Utils --
+-- utils --
 
 -- values for buttons, sprites, sizes, and colors --
 function init_constants()
@@ -289,6 +336,7 @@ function init_constants()
 
   player_sprite = 1
   enemy_sprite = 2
+  heart_sprite = 3
 
   player_width = 8
   player_height = 8
@@ -313,6 +361,10 @@ function init_constants()
   enemy_count = 3
   shooting_distance_min = 0.5
 
+  laser_duration_easy = 70 -- frames at level 1
+  laser_duration_hard = 30 -- frames at max difficulty
+  laser_cooldown_duration = 30 -- frames needed to recharge
+
   -- value used to compare floats
   epsilon = 0.00001
 end
@@ -332,16 +384,33 @@ function clamp(val, min, max)
 
   return val
 end
+
+-- returns how far along the difficulty scale we are as a value between 0 and 1
+-- (0 = easiest, 1 = hardest)
+function get_difficulty_progress()
+  local difficulty = get_difficulty()
+  local max_step = max(1, difficulty_max - 1)
+  local progress = clamp(difficulty - 1, 0, max_step)
+  return (progress / max_step) ^ 1.1
+end
+
+
 __gfx__
-00000000000000000bbbbbb000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-0000000000011000b111111b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00700700001661003171171300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00077000101661013117711300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-0007700060166106b117711b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00700700661661660b3333b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-000000005656656500b33b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000bbbbbb008800880088000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000011000b111111b88888888888800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00700700001661003171171388888888888800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00077000101661013117711388888888888800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0007700060166106b117711b08888880088800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00700700661661660b3333b000888800008800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+000000005656656500b33b0000088000000800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 0000000005555550000bb00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000001111000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00700700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00077000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00077000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00700700000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __label__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000077007700770777077700000000070700000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000700070007070707070000700000070700000000000000000
