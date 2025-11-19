@@ -35,9 +35,9 @@ function at_max_difficulty()
 end
 
 function draw_score()
-  print("Level: "..difficulty, 85, 0, color_white)
-  print("Score: "..score, 85, 7, color_white)
-  draw_health_display(83, 16)
+  print("Level:"..difficulty, 90, 3, color_white)
+  print("Score:"..score, 90, 10, color_white)
+  draw_health_display(88, 19)
 end
 
 -- Draws heart icons (full = 2 health, half = 1) 
