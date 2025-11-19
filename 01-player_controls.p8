@@ -15,6 +15,9 @@ end
 
 -- Check for left, right, up, and down inputs and update the player position
 function move_player()
+  local prev_x = player.x
+  local prev_y = player.y
+
   if btn(button_left) then
     player.x -= 1
   elseif btn(button_right) then
@@ -26,6 +29,11 @@ function move_player()
   end
 
   clamp_coordinates()
+
+  if collides_with_enemy(player.x, player.y) then
+    player.x = prev_x
+    player.y = prev_y
+  end
 end
 
 function draw_player()
@@ -53,6 +61,39 @@ function clamp_coordinates()
     player.y,
     screen_min_y,
     screen_max_y - player_height - 1)
+end
+
+-- Returns true if the proposed player position overlaps a living enemy
+function collides_with_enemy(new_x, new_y)
+  if not enemies then
+    return false
+  end
+
+  local player_min_x = new_x
+  local player_max_x = new_x + player_width
+  local player_min_y = new_y
+  local player_max_y = new_y + player_height
+
+  for enemy in all(enemies) do
+    if enemy.alive then
+      local enemy_min_x = enemy.x
+      local enemy_max_x = enemy.x + enemy_width
+      local enemy_min_y = enemy.y
+      local enemy_max_y = enemy.y + enemy_height
+
+      local separated =
+        player_max_x <= enemy_min_x or
+        player_min_x >= enemy_max_x or
+        player_max_y <= enemy_min_y or
+        player_min_y >= enemy_max_y
+
+      if not separated then
+        return true
+      end
+    end
+  end
+
+  return false
 end
 
 -- TODO: Use a sprite, and add movement to that
