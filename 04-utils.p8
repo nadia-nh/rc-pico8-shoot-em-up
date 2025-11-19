@@ -21,6 +21,8 @@ function init_constants()
 
   player_sprite = 1
   enemy_sprite = 2
+  full_heart_sprite = 3
+  half_heart_sprite = 4
 
   player_width = 8
   player_height = 8

@@ -1,8 +1,7 @@
 -- Scoring --
 function init_score()
   score = 0
-  health = 5
-  white = 7
+  health = 6
   difficulty = 1
 end
 
@@ -36,7 +35,24 @@ function at_max_difficulty()
 end
 
 function draw_score()
-  print("Score: "..score, 80, 0, white)
-  print("Health: "..health, 80, 7, white)
-  print("Level: "..difficulty, 80, 14, white)
+  print("Level: "..difficulty, 85, 0, color_white)
+  print("Score: "..score, 85, 7, color_white)
+  draw_health_display(83, 16)
+end
+
+-- Draws heart icons (full = 2 health, half = 1) 
+function draw_health_display(x, y)
+  local heart_x = x + 2
+  local heart_y = y - 1
+  local remaining = health
+
+  while remaining >= 2 do
+    spr(full_heart_sprite, heart_x, heart_y)
+    heart_x += 8
+    remaining -= 2
+  end
+
+  if remaining == 1 then
+    spr(half_heart_sprite, heart_x, heart_y)
+  end
 end

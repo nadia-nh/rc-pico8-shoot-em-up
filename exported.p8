@@ -1,6 +1,8 @@
+pico-8 cartridge // http://www.pico-8.com
+version 43
+__lua__
 --pico-8 cartridge // http://www.pico-8.com
 --version 43
-__lua__
 function _init()
   init_constants()
   init_score()
@@ -273,8 +275,7 @@ end
 -- scoring --
 function init_score()
   score = 0
-  health = 5
-  white = 7
+  health = 6
   difficulty = 1
 end
 
@@ -308,10 +309,28 @@ function at_max_difficulty()
 end
 
 function draw_score()
-  print("score: "..score, 80, 0, white)
-  print("health: "..health, 80, 7, white)
-  print("level: "..difficulty, 80, 14, white)
+  print("level: "..difficulty, 85, 0, color_white)
+  print("score: "..score, 85, 7, color_white)
+  draw_health_display(83, 16)
 end
+
+-- draws heart icons (full = 2 health, half = 1) 
+function draw_health_display(x, y)
+  local heart_x = x + 2
+  local heart_y = y - 1
+  local remaining = health
+
+  while remaining >= 2 do
+    spr(full_heart_sprite, heart_x, heart_y)
+    heart_x += 8
+    remaining -= 2
+  end
+
+  if remaining == 1 then
+    spr(half_heart_sprite, heart_x, heart_y)
+  end
+end
+
 -->8
 -- utils --
 
@@ -336,7 +355,8 @@ function init_constants()
 
   player_sprite = 1
   enemy_sprite = 2
-  heart_sprite = 3
+  full_heart_sprite = 3
+  half_heart_sprite = 4
 
   player_width = 8
   player_height = 8
