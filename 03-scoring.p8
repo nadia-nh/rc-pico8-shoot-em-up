@@ -38,6 +38,7 @@ function draw_score()
   print("Level:"..difficulty, 90, 3, color_white)
   print("Score:"..score, 90, 10, color_white)
   draw_health_display(88, 19)
+  draw_laser_meter(90, 27)
 end
 
 -- Draws heart icons (full = 2 health, half = 1) 
@@ -54,5 +55,33 @@ function draw_health_display(x, y)
 
   if remaining == 1 then
     spr(half_heart_sprite, heart_x, heart_y)
+  end
+end
+
+-- Draw a horizontal indicator showing remaining laser charge
+function draw_laser_meter(x, y)
+  local meter_width = 30
+  local meter_height = 4
+  local max_frames = max(1, get_laser_max_active_frames())
+  local depletion = clamp(laser_active_frames, 0, max_frames)
+  local remaining
+
+  if laser_cooldown_remaining > 0 then
+    remaining = 0
+  else
+    remaining = max_frames - depletion
+  end
+
+  local fill_width = flr((remaining / max_frames) * meter_width)
+
+  rectfill(x, y, x + meter_width - 1, y + meter_height - 1, color_dark_gray)
+
+  if fill_width > 0 then
+    rectfill(
+      x,
+      y,
+      x + fill_width - 1,
+      y + meter_height - 1,
+      color_green)
   end
 end

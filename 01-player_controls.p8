@@ -100,41 +100,45 @@ end
 -- Handles firing logic for the laser weapon.
 function shoot()
   local wants_to_fire = btn(button_x)
+  local max_frames = get_laser_max_active_frames()
+  local beam_fired = false
 
-  -- Laser duration has reached the maximum
-  if laser_active_frames > get_laser_max_active_frames() then
-    begin_laser_cooldown()
-    return
-  end
+  laser_active_frames = clamp(laser_active_frames, 0, max_frames)
 
   -- Cooldown hasn't finished yet
   if laser_cooldown_remaining > 0 then
     laser_cooldown_remaining = max(0, laser_cooldown_remaining - 1)
-    return
+  else
+    if wants_to_fire then
+      if not shooting then
+        start_shooting()
+      end
+
+      if laser_active_frames >= max_frames then
+        begin_laser_cooldown()
+        shooting = false
+        return
+      end
+
+      laser_active_frames = min(max_frames, laser_active_frames + 1)
+      draw_laser_beam()
+      beam_fired = true
+    else
+      laser_active_frames = max(0, laser_active_frames - 1)
+    end
   end
 
-  if not shooting and wants_to_fire then
-    start_shooting()
-  end
-
-  -- Check if we're already shooting
-  if shooting then
-    laser_active_frames += 1
-    draw_laser_beam()
-  end
-
-  shooting = wants_to_fire
+  shooting = beam_fired
 end
 
 function start_shooting()
   shooting = true
-  laser_active_frames = 0
   laser_cooldown_remaining = 0
 end
 
 function begin_laser_cooldown()
   shooting = false
-  laser_active_frames = 0
+  laser_active_frames = get_laser_max_active_frames()
   laser_cooldown_remaining = laser_cooldown_duration
 end
 
