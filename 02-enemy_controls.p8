@@ -127,8 +127,10 @@ function laser_covers_enemy(laser, enemy)
 end
 
 -- Mark the enemy as not alive, does not destroy it
+-- Swap the sprite to indicate destruction
 function destroy_enemy(enemy)
-  -- TODO: add an animation when the enemy dies
+  spr(dead_enemy_sprite, enemy.x, enemy.y)
+
   if not enemy.alive then
     error("destroy_enemy called on inactive enemy")
   end
