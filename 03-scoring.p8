@@ -36,9 +36,8 @@ end
 
 function draw_score()
   print("Level:"..difficulty, 90, 3, color_white)
-  print("Score:"..score, 90, 10, color_white)
-  draw_health_display(88, 19)
-  draw_laser_meter(90, 27)
+  draw_health_display(88, 12)
+  draw_laser_meter(90, 20)
 end
 
 -- Draws heart icons
@@ -80,4 +79,12 @@ function draw_laser_meter(x, y)
       y + meter_height - 1,
       color_green)
   end
+end
+
+function show_win_message()
+  print("You win! Score:"..score, 30, 100)
+end
+
+function show_lose_message()
+  print("Game over! Score:"..score, 30, 100)
 end

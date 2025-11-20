@@ -48,13 +48,13 @@ end
 -- Draw enemies that are still alive
 function draw_enemies()
   if no_health() then
-    print("Game over", 50, 100)
+    show_lose_message()
     return
   end
 
   if remaining_enemies == 0 then
     if at_max_difficulty() then
-      print("You win", 50, 100)
+      show_win_message()
       return
     end
 
