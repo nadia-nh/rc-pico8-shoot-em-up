@@ -1,7 +1,7 @@
 -- Scoring --
 function init_score()
   score = 0
-  health = 6
+  health = 4
   difficulty = 1
 end
 
@@ -41,20 +41,16 @@ function draw_score()
   draw_laser_meter(90, 27)
 end
 
--- Draws heart icons (full = 2 health, half = 1) 
+-- Draws heart icons
 function draw_health_display(x, y)
   local heart_x = x + 2
   local heart_y = y - 1
   local remaining = health
 
-  while remaining >= 2 do
+  while remaining > 0 do
     spr(full_heart_sprite, heart_x, heart_y)
     heart_x += 8
-    remaining -= 2
-  end
-
-  if remaining == 1 then
-    spr(half_heart_sprite, heart_x, heart_y)
+    remaining -= 1
   end
 end
 
