@@ -4,10 +4,14 @@
 function init_player()
   player = {
     x = screen_max_x / 2 - (player_width / 2),
-    y = screen_max_y - (player_height / 2)}
+    y = screen_max_y - (player_height / 2),
+  }
+  player.prev_x = player.x
+  player.prev_y = player.y
   lasers = {
     {x = screen_min_x, y = screen_min_y},
-    {x = screen_min_x, y = screen_min_y}}
+    {x = screen_min_x, y = screen_min_y}
+  }
   shooting = false
   laser_active_frames = 0
   laser_cooldown_remaining = 0
@@ -15,8 +19,8 @@ end
 
 -- Check for left, right, up, and down inputs and update the player position
 function move_player()
-  local prev_x = player.x
-  local prev_y = player.y
+  player.prev_x = player.x
+  player.prev_y = player.y
 
   if btn(button_left) then
     player.x -= 1
@@ -29,11 +33,6 @@ function move_player()
   end
 
   clamp_coordinates()
-
-  if collides_with_enemy(player.x, player.y) then
-    player.x = prev_x
-    player.y = prev_y
-  end
 end
 
 function draw_player()
@@ -47,6 +46,30 @@ end
 
 function is_shooting()
   return shooting
+end
+
+function handle_collisions()
+  if not enemies then
+    return false
+  end
+
+  local min_x = player.x
+  local max_x = player.x + player_width
+  local min_y = player.y
+  local max_y = player.y + player_height
+
+  for enemy in all(enemies) do
+    if collides_with_enemy(enemy, min_x, max_x, min_y, max_y) then
+      player.x = player.prev_x
+      player.y = player.prev_y
+
+      enemy.y = enemy.prev_y
+      enemy.x = enemy.prev_x
+      enemy.move_right = not enemy.move_right
+    end
+
+    bounce_on_wall(enemy)
+  end
 end
 
 ---------- Private methods ----------
@@ -64,36 +87,23 @@ function clamp_coordinates()
 end
 
 -- Returns true if the new player position overlaps a living enemy
-function collides_with_enemy(new_x, new_y)
-  if not enemies then
+function collides_with_enemy(enemy, min_x, max_x, min_y, max_y)
+  if not enemy.alive then
     return false
   end
 
-  local player_min_x = new_x
-  local player_max_x = new_x + player_width
-  local player_min_y = new_y
-  local player_max_y = new_y + player_height
+  local enemy_min_x = enemy.x - epsilon
+  local enemy_max_x = enemy.x + enemy_width + epsilon
+  local enemy_min_y = enemy.y - epsilon
+  local enemy_max_y = enemy.y + enemy_height + epsilon
 
-  for enemy in all(enemies) do
-    if enemy.alive then
-      local enemy_min_x = enemy.x - epsilon
-      local enemy_max_x = enemy.x + enemy_width + epsilon
-      local enemy_min_y = enemy.y - epsilon
-      local enemy_max_y = enemy.y + enemy_height + epsilon
+  local separated =
+    max_x <= enemy_min_x or
+    min_x >= enemy_max_x or
+    max_y <= enemy_min_y or
+    min_y >= enemy_max_y
 
-      local separated =
-        player_max_x <= enemy_min_x or
-        player_min_x >= enemy_max_x or
-        player_max_y <= enemy_min_y or
-        player_min_y >= enemy_max_y
-
-      if not separated then
-        return true
-      end
-    end
-  end
-
-  return false
+  return not separated
 end
 
 -- Handles firing logic for the laser weapon.

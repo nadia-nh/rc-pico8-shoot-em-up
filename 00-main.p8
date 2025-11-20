@@ -8,6 +8,7 @@ end
 function _update()
   move_player()
   move_enemies()
+  handle_collisions()
 end
 
 function _draw()
