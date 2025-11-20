@@ -77,6 +77,5 @@ function get_difficulty_progress()
   local difficulty = get_difficulty()
   local max_step = max(1, difficulty_max - 1)
   local progress = clamp(difficulty - 1, 0, max_step)
-  return (progress / max_step) ^ 1.1
+  return (progress / max_step) ^ 0.75
 end
-
