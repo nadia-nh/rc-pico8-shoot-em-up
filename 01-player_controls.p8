@@ -64,8 +64,7 @@ function handle_collisions()
       player.y = player.prev_y
 
       enemy.y = enemy.prev_y
-      enemy.x = enemy.prev_x
-      enemy.move_right = not enemy.move_right
+      move_enemy_horizontally(enemy, min_x, max_x)
     end
 
     bounce_on_wall(enemy)

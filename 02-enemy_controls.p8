@@ -10,7 +10,6 @@ function init_enemies()
     add(enemies, {
       x = rnd(screen_max_x - enemy_width),
       y = rnd(screen_max_y / 3),
-      prev_x = 0,
       prev_y = 0,
       delta_x = 1 / (speed_min - flr(rnd(get_difficulty()))),
       delta_y = 1 / (speed_min - flr(rnd(get_difficulty()))),
@@ -23,7 +22,6 @@ end
 -- Move all enemies diagonally according to their speed
 function move_enemies()
   for enemy in all(enemies) do
-    enemy.prev_x = enemy.x
     enemy.prev_y = enemy.y
 
     enemy.y += enemy.delta_y
@@ -74,6 +72,25 @@ function bounce_on_wall(enemy)
 
   if enemy.x == screen_min_x or enemy.y == max_value then
     enemy.move_right = not enemy.move_right
+  end
+end
+
+function move_enemy_horizontally(enemy, min_x, max_x)
+  local enemy_min_x = enemy.x
+  local enemy_max_x = enemy.x + enemy_width
+  local overlap_left = max(0, enemy_max_x - min_x)
+  local overlap_right = max(0, max_x - enemy_min_x)
+
+  if overlap_left == 0 and overlap_right == 0 then
+    return
+  end
+
+  if overlap_left < overlap_right then
+    enemy.x -= enemy.delta_x
+    enemy.move_right = false
+  else
+    enemy.x += enemy.delta_x
+    enemy.move_right = true
   end
 end
 
