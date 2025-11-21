@@ -10,7 +10,7 @@ Complete the 10 levels with increasing difficulty to beat the game!
 
 Clone the repo:
 ```
-git clone https://github.com/hered/pico8-shoot-em-up.git
+git clone https://github.com/nadia-nh/rc-pico8-shoot-em-up.git
 cd pico8-shoot-em-up
 ```
 
