@@ -2,7 +2,7 @@
 
 function init_score()
   score = 0
-  health = 4
+  health = health_max
   difficulty = 1
 end
 
@@ -37,20 +37,23 @@ end
 
 function draw_score()
   print("Level:"..difficulty, 90, 3, color_white)
-  draw_health_display(88, 12)
+  draw_health_display(90, 12)
   draw_laser_meter(90, 20)
 end
 
--- Draws heart icons
+-- Draws heart icons, also show lost health as empty hearts
 function draw_health_display(x, y)
-  local heart_x = x + 2
+  local heart_x = x
   local heart_y = y - 1
-  local remaining = health
 
-  while remaining > 0 do
+  for i = 1, health do
     spr(full_heart_sprite, heart_x, heart_y)
     heart_x += 8
-    remaining -= 1
+  end
+
+  for i = health + 1, health_max do
+    spr(empty_heart_sprite, heart_x, heart_y)
+    heart_x += 8
   end
 end
 

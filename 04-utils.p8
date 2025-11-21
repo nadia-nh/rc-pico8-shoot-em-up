@@ -24,6 +24,7 @@ function init_constants()
   full_heart_sprite = 3
   half_heart_sprite = 4
   dead_enemy_sprite = 5
+  empty_heart_sprite = 6
 
   player_width = 8
   player_height = 8
@@ -47,6 +48,7 @@ function init_constants()
   difficulty_max = 10
   enemy_count = 3
   shooting_distance_min = 0.5
+  health_max = 4
 
   laser_duration_easy = 70 -- frames at level 1
   laser_duration_hard = 30 -- frames at max difficulty
