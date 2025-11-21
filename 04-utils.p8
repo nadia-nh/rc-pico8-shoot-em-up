@@ -58,7 +58,7 @@ end
 
 -- Checks if val in [min, max)
 function in_range(val, min, max)
-  return val >= min and val < max
+  return greater_or_equal(val, min) and val < max
 end
 
 -- Clamps val to [min, max]
@@ -70,6 +70,21 @@ function clamp(val, min, max)
   end
 
   return val
+end
+
+-- Checks if two floats are approximately equal
+function equals(a, b)
+  return abs(a - b) < epsilon
+end
+
+-- Checks if a is less than or approximately equal to b
+function less_or_equal(a, b)
+  return a < b or equals(a, b)
+end
+
+-- Checks if a is greater than or approximately equal to b
+function greater_or_equal(a, b)
+  return a > b or equals(a, b)
 end
 
 -- Returns how far along the difficulty scale we are as a value between 0 and 1

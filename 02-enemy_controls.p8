@@ -127,9 +127,9 @@ end
 -- Laser position should be below the enemy vertically and
 -- within the enemy's whole sprite horizontally
 function laser_covers_enemy(laser, enemy)
-  local min_x = enemy.x - epsilon
-  local max_x = enemy.x + enemy_width + epsilon
-  local min_y = enemy.y + enemy_height + shooting_distance_min - epsilon
+  local min_x = enemy.x
+  local max_x = enemy.x + enemy_width
+  local min_y = enemy.y + enemy_height + shooting_distance_min
   local max_y = screen_max_y
 
   return in_range(laser.x, min_x, max_x) and in_range(laser.y, min_y, max_y)

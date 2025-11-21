@@ -91,16 +91,16 @@ function collides_with_enemy(enemy, min_x, max_x, min_y, max_y)
     return false
   end
 
-  local enemy_min_x = enemy.x - epsilon
-  local enemy_max_x = enemy.x + enemy_width + epsilon
-  local enemy_min_y = enemy.y - epsilon
-  local enemy_max_y = enemy.y + enemy_height + epsilon
+  local enemy_min_x = enemy.x
+  local enemy_max_x = enemy.x + enemy_width
+  local enemy_min_y = enemy.y
+  local enemy_max_y = enemy.y + enemy_height
 
   local separated =
-    max_x <= enemy_min_x or
-    min_x >= enemy_max_x or
-    max_y <= enemy_min_y or
-    min_y >= enemy_max_y
+    less_or_equal(max_x, enemy_min_x) or
+    greater_or_equal(min_x, enemy_max_x) or
+    less_or_equal(max_y, enemy_min_y) or
+    greater_or_equal(min_y, enemy_max_y)
 
   return not separated
 end
