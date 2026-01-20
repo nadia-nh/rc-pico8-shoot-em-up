@@ -1,15 +1,15 @@
-## RC Pico-8 Shoot-em-up
+## Space Laser
 
 <img width="640" height="480" alt="pico-8 screenshot" src="screenshot-rc-shooter.png" />
 
-Small arcade shooter built with at the [Recurse Center](https://www.recurse.com/) with [PICO-8](https://www.lexaloffle.com/pico-8.php) to try out using the Pico-8 fantasy console.
+Small arcade shooter built with at [Recurse Center](https://www.recurse.com/) with [PICO-8](https://www.lexaloffle.com/pico-8.php) to try out using the Pico-8 fantasy console.
 It features a ship that can move and shoot lasers at falling enemies. The lasers have a limited battery and they need to charge after a bit, making the game harder.
 Complete the 10 levels with increasing difficulty to beat the game!
 
 ### Running the game
 
 Clone the repo:
-```
+``` bash
 git clone https://github.com/nadia-nh/rc-pico8-shoot-em-up.git
 cd pico8-shoot-em-up
 ```
