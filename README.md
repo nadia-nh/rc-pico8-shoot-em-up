@@ -4,9 +4,9 @@
 
 Small arcade shooter built with at [Recurse Center](https://www.recurse.com/) with [PICO-8](https://www.lexaloffle.com/pico-8.php) to try out using the Pico-8 fantasy console.
 It features a ship that can move and shoot lasers at falling enemies. The lasers have a limited battery and they need to charge after a bit, making the game harder.
-Complete the 10 levels with increasing difficulty to beat the game!
+Complete the 10 levels with increasing difficulty to beat the game! Try the game out [here](https://www.lexaloffle.com/bbs/cart_info.php?cid=rasifebuhi-8).
 
-### Running the game
+### Running the game locally
 
 Clone the repo:
 ``` bash
@@ -67,3 +67,7 @@ The logic is organized across small cart files:
 
 - [PICO-8 Manual](https://www.lexaloffle.com/pico-8.php?page=manual) – General API and cartridge structure
 - [Simple space shooter Pico-8 Mini Course](https://www.youtube.com/watch?v=0EUlGg9ie_Y) - Loosely followed this tutorial for structuring the code and as an asset drawing guide
+
+---
+
+Made with <3 at [The Recurse Center](https://recurse.com).  
